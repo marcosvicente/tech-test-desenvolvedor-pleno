@@ -1,0 +1,33 @@
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope=col">Filename</th>
+      <th scope=col">status</th>
+      <th scope=col">Subject Email</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @upload_files.each do |upload_file| %>
+      <tr>
+        <td><%= upload_file.filename %></td>
+        <td><%= upload_file.status %></td>
+        <% if upload_file.nil? %>
+          <td><%= upload_file.customer.name %></td>
+        <% else %>
+          <td> Custumer is processing</td>
+        <% end %>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+
+</div>
+<div class="d-flex align-items-center  justify-content-md-center mb-3">
+  <%= link_to 'New Upload File', new_upload_file_path, class: 'btn btn-primary' %>
+</div>
+
+<div class="d-flex align-items-center  justify-content-md-center mb-3">
+  <%= paginate @upload_files %>
+</div>

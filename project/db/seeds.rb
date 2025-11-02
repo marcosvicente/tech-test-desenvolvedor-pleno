@@ -1,3 +1,4 @@
 100.times do |i|
-  FactoryBot.create(:customer)
+  customer = FactoryBot.create(:customer)
+  FactoryBot.create(:upload_email, customer_id: customer.id)
 end

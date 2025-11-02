@@ -1,0 +1,7 @@
+<%= form_with model: @upload_files, url: upload_files_path, local: true, html: { multipart: true, class: 'mt-3' } do |f| %>
+  <div class="mb-3">
+    <%= f.label :filename, 'Arquivo .eml', class: 'form-label' %>
+    <%= f.file_field :filename, accept: '.eml', class: 'form-control', required: true %>
+  </div>
+  <%= f.submit 'Enviar e processar', class: 'btn btn-primary' %>
+<% end %>

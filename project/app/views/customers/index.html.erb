@@ -1,0 +1,31 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope=col">Name</th>
+      <th scope=col">Email</th>
+      <th scope=col">Phone</th>
+      <th scope=col">Cod Product</th>
+      <th scope=col">Subject Email</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @customers.each do |customer| %>
+      <tr>
+        <td><%= customer.name %></td>
+        <td><%= customer.email %></td>
+        <td><%= customer.phone %></td>
+        <td><%= customer.cod_product %></td>
+        <td><%= customer.subject_email %></td>
+      </tr>
+    <% end %>
+
+
+    </tbody>
+  </table>
+
+</div>
+<div class="d-flex align-items-center  justify-content-md-center mb-3">
+
+<%= paginate @customers %>
+</div>

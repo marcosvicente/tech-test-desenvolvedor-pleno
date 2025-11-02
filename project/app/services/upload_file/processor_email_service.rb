@@ -9,8 +9,10 @@ module UploadFile
     end
 
     def call
-      create_upload_file
-      process_file!
+      ActiveRecord::Base.transaction do
+        create_upload_file
+        process_file!
+      end
     end
 
     private
@@ -51,11 +53,9 @@ module UploadFile
     def select_parser(raw)
       klass = raw.map {|k| client_headers.include?(k) }
       if klass.include?(true)
-        binding.pry
-        @upload_email = UploadFile::ParserEmail::ClientParserEmailService.call(raw: raw, upload_file: @upload_email)
+        @upload_email = UploadFile::ParserEmail::ClientParserEmailService.new(raw: read_file, upload_file: @upload_email).call
       else
-        binding.pry
-        @upload_email= UploadFile::ParserEmail::CompanyParserEmailService.call(raw: raw, upload_file: @upload_email)
+        @upload_email= UploadFile::ParserEmail::CompanyParserEmailService.new(raw: read_file, upload_file: @upload_email).call
       end
     end
     def create_upload_file

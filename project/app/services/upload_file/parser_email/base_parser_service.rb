@@ -6,19 +6,13 @@ module UploadFile
         @upload_file = upload_file
       end
 
-      def call
-        binding.pry
 
+      def call
         intance_customer
-        update_upload_file
       end
 
       def intance_customer
-        super
-      end
-
-      def update_upload_file
-        @upload_file.update!(customer: @custumer)
+        raise NotImplementedError
       end
     end
   end

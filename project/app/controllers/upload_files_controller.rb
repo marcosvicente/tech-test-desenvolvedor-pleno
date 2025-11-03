@@ -8,8 +8,10 @@ class UploadFilesController < ApplicationController
   end
 
   def create
-    UploadFile::ProcessorEmailService.call(filename: upload_file_params[:filename])
+    # UploadFile::ProcessorEmailService.call(filename: upload_file_params[:filename])
+    UploadParserJob.perform_async(filename: upload_file_params[:filename])
     redirect_to upload_files_path, notice: 'File send and upload started.'
+
   rescue => e
     redirect_to new_upload_file_path, alert: "Fail in upload: #{e.message}"
   end

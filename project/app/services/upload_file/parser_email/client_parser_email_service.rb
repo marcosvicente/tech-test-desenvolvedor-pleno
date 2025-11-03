@@ -2,10 +2,11 @@ module UploadFile
   module ParserEmail
     class ClientParserEmailService < BaseParserService
       def intance_customer
-        name = @raw[/^(?:Cliente|Nome completo|Nome do cliente):\s*(.+)$/i, 1]
-        email = @raw[/^(?:Email|E-?mail de contato):\s*([^\s]+)$/i, 1]
-        phone = @raw[/^Telefone:\s*([\+\d\s\-\(\)]+)/i, 1]
-        cod_product = @raw[/^(?:Produto(?:\s+de\s+interesse)?|C[oó]digo do produto):\s*([A-Z0-9\-]+)/i, 1]
+        name = @raw[/Nome(?:\s+do\s+cliente)?:\s*(.+)/i, 1]
+        name ||= @raw[/^Assinatura[,\s]*\n(.+)/i, 1]
+        email = @raw[/E-?mail:\s*([^\s]+)/i, 1]
+        phone = @raw[/Telefone:\s*([\(\)\d\s\-\+]+)/i, 1]
+        cod_product = @raw[/produto(?:\s+de\s+c[oó]digo)?\s*([A-Z0-9\-]+)/i, 1] || raw[/Produto\s*([A-Z0-9\-]+)/i, 1]
         subject_email = @raw[/^Subject:\s*(.+)$/i, 1]
 
         @custumer = Customer.create!(

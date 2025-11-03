@@ -1,7 +1,7 @@
 module UploadFile
   class ProcessorEmailService
     def initialize(filename)
-      @filename = filename[:filename]
+      @filename = filename
     end
 
     def self.call(filename)
@@ -12,22 +12,22 @@ module UploadFile
       ActiveRecord::Base.transaction do
         create_upload_file
         process_file!
+        @upload_email
       end
     end
 
     private
 
-    def client_headers
+    # Colocar array de emails para salvar determinado item
+    def client_from
       [
-        "Nome do cliente:",
-        "Client",
+        "loja@fornecedorA.com",
       ]
     end
 
-    def custumers_headers
+    def custumers_from
       [
-        "Nome completo:",
-        "Nome:",
+        "contato@parceiroB.com",
       ]
     end
     def process_file!
@@ -51,13 +51,20 @@ module UploadFile
     end
 
     def select_parser(raw)
-      klass = raw.map {|k| client_headers.include?(k) }
-      if klass.include?(true)
-        @upload_email = UploadFile::ParserEmail::ClientParserEmailService.new(raw: read_file, upload_file: @upload_email).call
+      if get_email_from_file(raw).in?(client_from)
+        UploadFile::ParserEmail::ClientParserEmailService.new(raw: read_file, upload_file: @upload_email).call
+      elsif get_email_from_file(raw).in?(custumers_from)
+        UploadFile::ParserEmail::CompanyParserEmailService.new(raw: read_file, upload_file: @upload_email).call
       else
-        @upload_email= UploadFile::ParserEmail::CompanyParserEmailService.new(raw: read_file, upload_file: @upload_email).call
+        binding.pry
+        @upload_email.update!(status: :failed)
       end
     end
+
+    def get_email_from_file(raw)
+      raw[0].split("From: ").last
+    end
+
     def create_upload_file
       @upload_email = UploadEmail.create(filename: @filename, status: :queueding)
     end
